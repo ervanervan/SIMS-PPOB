@@ -26,14 +26,13 @@ const Navbar: React.FC = () => {
           <div className="md:hidden">
             <button onClick={() => setMenuOpen(!menuOpen)}>
               {menuOpen ? (
-                <XMarkIcon className="h-6 w-6 text-black/85" /> // Ikon close
+                <XMarkIcon className="h-6 w-6 text-black/85" />
               ) : (
-                <Bars3Icon className="h-6 w-6 text-black/85" /> // Ikon menu
+                <Bars3Icon className="h-6 w-6 text-black/85" />
               )}
             </button>
           </div>
 
-          {/* Menu bar untuk medium screen */}
           {/* Menu bar untuk medium screen */}
           <nav className="hidden md:flex space-x-16">
             <Link
@@ -72,7 +71,7 @@ const Navbar: React.FC = () => {
             className={`block ${
               isActive("/topup") ? "text-primary" : "text-black/85"
             } hover:text-primary/90`}
-            onClick={() => setMenuOpen(false)} // Tutup menu saat item diklik
+            onClick={() => setMenuOpen(false)}
           >
             Top Up
           </Link>
@@ -81,7 +80,7 @@ const Navbar: React.FC = () => {
             className={`block ${
               isActive("/transaction") ? "text-primary" : "text-black/85"
             } hover:text-primary/90`}
-            onClick={() => setMenuOpen(false)} // Tutup menu saat item diklik
+            onClick={() => setMenuOpen(false)}
           >
             Transaction
           </Link>
@@ -90,7 +89,7 @@ const Navbar: React.FC = () => {
             className={`block ${
               isActive("/account") ? "text-primary" : "text-black/85"
             } hover:text-primary/90`}
-            onClick={() => setMenuOpen(false)} // Tutup menu saat item diklik
+            onClick={() => setMenuOpen(false)}
           >
             Akun
           </Link>
