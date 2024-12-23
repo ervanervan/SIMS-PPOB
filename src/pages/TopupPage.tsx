@@ -1,5 +1,11 @@
+import UserBalance from "../components/UserBalance";
+
 const TopupPage = () => {
-  return <div>TopupPage</div>;
+  return (
+    <>
+      <UserBalance />
+    </>
+  );
 };
 
 export default TopupPage;

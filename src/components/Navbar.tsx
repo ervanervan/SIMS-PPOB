@@ -1,10 +1,15 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import logo from "../assets/images/Logo.png";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
 const Navbar: React.FC = () => {
-  const [menuOpen, setMenuOpen] = useState(false); // Menyimpan status menu mobile
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const location = useLocation(); // Untuk mendapatkan path aktif saat ini
+
+  // Fungsi untuk memeriksa apakah path aktif
+  const isActive = (path: string) => location.pathname === path;
 
   return (
     <section className="border-b">
@@ -29,22 +34,29 @@ const Navbar: React.FC = () => {
           </div>
 
           {/* Menu bar untuk medium screen */}
+          {/* Menu bar untuk medium screen */}
           <nav className="hidden md:flex space-x-16">
             <Link
               to="/topup"
-              className="font-medium text-black/85 hover:text-black/70"
+              className={`font-medium ${
+                isActive("/topup") ? "text-primary" : "text-black/85"
+              } hover:text-primary/90`}
             >
               Top Up
             </Link>
             <Link
               to="/transaction"
-              className="font-medium text-black/85 hover:text-black/70"
+              className={`font-medium ${
+                isActive("/transaction") ? "text-primary" : "text-black/85"
+              } hover:text-primary/90`}
             >
               Transaction
             </Link>
             <Link
               to="/account"
-              className="font-medium text-black/85 hover:text-black/70"
+              className={`font-medium ${
+                isActive("/account") ? "text-primary" : "text-black/85"
+              } hover:text-primary/90`}
             >
               Akun
             </Link>
@@ -57,21 +69,27 @@ const Navbar: React.FC = () => {
         <div className="md:hidden p-4 space-y-4 bg-white shadow-md">
           <Link
             to="/topup"
-            className="block text-black/85 hover:text-black/70"
+            className={`block ${
+              isActive("/topup") ? "text-primary" : "text-black/85"
+            } hover:text-primary/90`}
             onClick={() => setMenuOpen(false)} // Tutup menu saat item diklik
           >
             Top Up
           </Link>
           <Link
             to="/transaction"
-            className="block text-black/85 hover:text-black/70"
+            className={`block ${
+              isActive("/transaction") ? "text-primary" : "text-black/85"
+            } hover:text-primary/90`}
             onClick={() => setMenuOpen(false)} // Tutup menu saat item diklik
           >
             Transaction
           </Link>
           <Link
             to="/account"
-            className="block text-black/85 hover:text-black/70"
+            className={`block ${
+              isActive("/account") ? "text-primary" : "text-black/85"
+            } hover:text-primary/90`}
             onClick={() => setMenuOpen(false)} // Tutup menu saat item diklik
           >
             Akun
