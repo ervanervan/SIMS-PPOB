@@ -1,5 +1,11 @@
+import UserBalance from "../components/UserBalance";
+
 const HomePage = () => {
-  return <div>HomePage</div>;
+  return (
+    <>
+      <UserBalance />
+    </>
+  );
 };
 
 export default HomePage;
