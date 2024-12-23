@@ -40,10 +40,10 @@ export default function UserBalance() {
               <p className="text-white text-3xl font-semibold">Rp •••••••</p>
             )}
             <p
-              className="text-white text-sm -mt-0.5 cursor-pointer"
+              className="text-white text-xs mt-0.5 cursor-pointer"
               onClick={toggleBalanceVisibility}
             >
-              {isBalanceVisible ? "Sembunyikan saldo" : "Lihat saldo"}
+              {isBalanceVisible ? "Tutup saldo" : "Lihat saldo"}
             </p>
           </div>
         </div>
