@@ -1,3 +1,4 @@
+import Banner from "../components/Banner";
 import ListServices from "../components/ListServices";
 import UserBalance from "../components/UserBalance";
 
@@ -6,6 +7,7 @@ const HomePage = () => {
     <>
       <UserBalance />
       <ListServices />
+      <Banner />
     </>
   );
 };
