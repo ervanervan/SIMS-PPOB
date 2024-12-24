@@ -74,6 +74,7 @@ export default function ProfileCard() {
             leftIcon={<AtSymbolIcon className="h-4 w-4" />}
             value={userProfile.email} // Tampilkan email dari profil
             readOnly // Buat field ini hanya bisa dibaca
+            disabled={true} // Tambahkan properti disabled
           />
           <div className="mb-2 text-sm font-semibold text-black/85">
             <label htmlFor="">Nama Depan</label>
@@ -85,6 +86,7 @@ export default function ProfileCard() {
             leftIcon={<UserIcon className="h-4 w-4" />}
             value={userProfile.first_name} // Tampilkan nama depan dari profil
             readOnly // Buat field ini hanya bisa dibaca
+            disabled={true}
           />
           <div className="mb-2 text-sm font-semibold text-black/85">
             <label htmlFor="">Nama Belakang</label>
@@ -96,6 +98,7 @@ export default function ProfileCard() {
             leftIcon={<UserIcon className="h-4 w-4" />}
             value={userProfile.last_name} // Tampilkan nama belakang dari profil
             readOnly // Buat field ini hanya bisa dibaca
+            disabled={true}
           />
         </div>
         <div className="flex flex-col gap-3 mb-10">

@@ -17,14 +17,16 @@ const TransactionHistory = () => {
       setError(null);
       try {
         const data = await getTransactionHistory(limit, offset); // Ambil riwayat transaksi dengan limit dan offset
-        
+
         // Jika jumlah data yang diterima kurang dari limit, set hasMore ke false
         if (data.records.length < limit) {
           setHasMore(false);
         }
-        
+
         // Jika offset adalah 0, reset transactions, jika tidak, tambahkan data baru
-        setTransactions((prev) => (offset === 0 ? data.records : [...prev, ...data.records])); 
+        setTransactions((prev) =>
+          offset === 0 ? data.records : [...prev, ...data.records]
+        );
       } catch (err: any) {
         setError(err.message); // Set error message
       } finally {
@@ -70,7 +72,9 @@ const TransactionHistory = () => {
               />
             ))
           ) : (
-            <p className="text-center text-gray-500">Tidak ada transaksi untuk ditampilkan.</p>
+            <p className="text-center text-gray-500">
+              Tidak ada transaksi untuk ditampilkan.
+            </p>
           )}
         </div>
         {hasMore ? (
@@ -84,7 +88,7 @@ const TransactionHistory = () => {
           </div>
         ) : (
           <p className="mt-4 text-center text-gray-500">
-            Semua data telah ditampilkan.
+            Semua data transaksi telah ditampilkan.
           </p>
         )}
       </div>
