@@ -44,17 +44,19 @@ const Navbar: React.FC = () => {
               Top Up
             </Link>
             <Link
-              to="/transaction"
+              to="/transaction/history"
               className={`font-medium ${
-                isActive("/transaction") ? "text-primary" : "text-black/85"
+                isActive("/transaction/history")
+                  ? "text-primary"
+                  : "text-black/85"
               } hover:text-primary/90`}
             >
               Transaction
             </Link>
             <Link
-              to="/account"
+              to="/profile"
               className={`font-medium ${
-                isActive("/account") ? "text-primary" : "text-black/85"
+                isActive("/profile") ? "text-primary" : "text-black/85"
               } hover:text-primary/90`}
             >
               Akun
@@ -76,18 +78,20 @@ const Navbar: React.FC = () => {
             Top Up
           </Link>
           <Link
-            to="/transaction"
+            to="/transaction/history"
             className={`block ${
-              isActive("/transaction") ? "text-primary" : "text-black/85"
+              isActive("/transaction/history")
+                ? "text-primary"
+                : "text-black/85"
             } hover:text-primary/90`}
             onClick={() => setMenuOpen(false)}
           >
             Transaction
           </Link>
           <Link
-            to="/account"
+            to="/profile"
             className={`block ${
-              isActive("/account") ? "text-primary" : "text-black/85"
+              isActive("/profile") ? "text-primary" : "text-black/85"
             } hover:text-primary/90`}
             onClick={() => setMenuOpen(false)}
           >

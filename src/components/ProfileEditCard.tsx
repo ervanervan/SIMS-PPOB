@@ -4,20 +4,29 @@ import imageProfile from "../assets/images/Profile Photo.png"; // Gambar profil 
 import InputField from "./InputField";
 import Button from "./Button";
 import { PencilIcon } from "@heroicons/react/24/solid";
-import { getProfile } from "../services/authService"; // Pastikan ini sesuai dengan path yang benar
+import {
+  getProfile,
+  updateProfile,
+  updateProfileImage,
+} from "../services/authService"; // Pastikan ini sesuai dengan path yang benar
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 
-export default function ProfileCard() {
+export default function ProfileEditCard() {
   const navigate = useNavigate(); // Inisialisasi useNavigate
   const [userProfile, setUserProfile] = useState<any>(null); // Ganti any dengan tipe yang sesuai
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
+  const [imageFile, setImageFile] = useState<File | null>(null); // State untuk menyimpan file gambar
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const profileData = await getProfile();
         setUserProfile(profileData);
+        setFirstName(profileData.first_name); // Set initial value for first name
+        setLastName(profileData.last_name); // Set initial value for last name
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -28,13 +37,40 @@ export default function ProfileCard() {
     fetchProfile();
   }, []);
 
-  const handleEditProfile = () => {
-    navigate("/profile/update"); // Arahkan ke halaman update profile
+  const handleEditProfile = async (e: React.FormEvent) => {
+    e.preventDefault(); // Mencegah reload halaman
+    try {
+      await updateProfile({ first_name: firstName, last_name: lastName });
+      setError(null); // Reset error jika berhasil
+      navigate("/profile"); // Arahkan kembali ke halaman profil setelah berhasil
+    } catch (err: any) {
+      setError(err.message);
+    }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("authToken"); // Hapus token dari localStorage
-    navigate("/login"); // Arahkan ke halaman login
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const fileType = file.type.split("/")[1]; // Mendapatkan tipe file
+      if (fileType !== "jpeg" && fileType !== "png") {
+        setError("Hanya file JPEG dan PNG yang diperbolehkan.");
+        return;
+      }
+      setImageFile(file); // Simpan file gambar ke state
+      setError(null); // Reset error jika file valid
+    }
+  };
+
+  const handleImageUpload = async () => {
+    if (imageFile) {
+      try {
+        await updateProfileImage(imageFile); // Panggil fungsi untuk mengupdate gambar profil
+        setError(null); // Reset error jika berhasil
+        navigate("/profile"); // Arahkan kembali ke halaman profil setelah berhasil
+      } catch (err: any) {
+        setError(err.message);
+      }
+    }
   };
 
   if (loading) {
@@ -47,7 +83,7 @@ export default function ProfileCard() {
 
   return (
     <section className="p-5 container mx-auto">
-      <form className="max-w-2xl mx-auto">
+      <form className="max-w-2xl mx-auto" onSubmit={handleEditProfile}>
         <div className="flex flex-col items-center justify-center mt-3">
           <div className="relative size-36">
             <img
@@ -55,9 +91,20 @@ export default function ProfileCard() {
               alt="profile image"
               className="size-36 object-cover rounded-full border border-gray-300"
             />
-            <div className="absolute bottom-0 right-0 border border-gray-300 p-2 rounded-full bg-white">
+            <input
+              type="file"
+              accept="image/jpeg, image/png"
+              onChange={handleImageChange}
+              style={{ display: "none" }} // Sembunyikan input file
+              id="image-upload"
+            />
+            <label
+              htmlFor="image-upload"
+              className="absolute bottom-0 right-0 border border-gray-300 p-2 rounded-full bg-white cursor-pointer"
+              onClick={handleImageUpload} // Panggil fungsi upload saat label diklik
+            >
               <PencilIcon className="size-4" />
-            </div>
+            </label>
           </div>
           <p className="mt-5 text-black/85 font-semibold text-3xl">
             {userProfile.first_name} {userProfile.last_name}
@@ -83,8 +130,8 @@ export default function ProfileCard() {
             name="firstName"
             placeholder="Nama depan"
             leftIcon={<UserIcon className="h-4 w-4" />}
-            value={userProfile.first_name} // Tampilkan nama depan dari profil
-            readOnly // Buat field ini hanya bisa dibaca
+            value={firstName} // Gunakan state untuk nama depan
+            onChange={(e) => setFirstName(e.target.value)} // Update state saat input berubah
           />
           <div className="mb-2 text-sm font-semibold text-black/85">
             <label htmlFor="">Nama Belakang</label>
@@ -94,24 +141,16 @@ export default function ProfileCard() {
             name="lastName"
             placeholder="Nama belakang"
             leftIcon={<UserIcon className="h-4 w-4" />}
-            value={userProfile.last_name} // Tampilkan nama belakang dari profil
-            readOnly // Buat field ini hanya bisa dibaca
+            value={lastName} // Gunakan state untuk nama belakang
+            onChange={(e) => setLastName(e.target.value)} // Update state saat input berubah
           />
         </div>
         <div className="flex flex-col gap-3 mb-10">
           <Button
-            type="button" // Ubah type menjadi button
+            type="submit" // Ubah type menjadi submit untuk mengirim formulir
             className="w-full bg-primary text-white py-3 mt-4"
-            onClick={handleEditProfile} // Tamb onClick={handleEditProfile} // Tambahkan event handler untuk tombol Edit Profile
           >
-            Edit Profile
-          </Button>
-          <Button
-            type="button" // Ubah type menjadi button
-            className="w-full text-primary border border-primary bg-white py-3 mt-4"
-            onClick={handleLogout} // Tambahkan event handler untuk tombol Logout
-          >
-            Logout
+            Simpan Perubahan
           </Button>
         </div>
       </form>

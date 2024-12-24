@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import InputField from "../components/InputField";
 import Button from "../components/Button";
 import logo from "../assets/images/Logo.png";
@@ -9,8 +9,11 @@ import {
   AtSymbolIcon,
   LockClosedIcon,
 } from "@heroicons/react/24/outline";
+import { registerUser } from "../services/authService"; // Pastikan ini sesuai dengan path yang benar
 
 const RegisterPage: React.FC = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     email: "",
     firstName: "",
@@ -32,9 +35,17 @@ const RegisterPage: React.FC = () => {
     message: string;
   }>({ type: null, message: "" });
 
+  // Validasi form
   const validateForm = () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     const errors = {
-      email: { error: !formData.email, message: "Email tidak boleh kosong" },
+      email: {
+        error: !formData.email || !emailRegex.test(formData.email),
+        message: !formData.email
+          ? "Email tidak boleh kosong"
+          : "Format email tidak valid",
+      },
       firstName: {
         error: !formData.firstName,
         message: "Nama depan tidak boleh kosong",
@@ -44,8 +55,10 @@ const RegisterPage: React.FC = () => {
         message: "Nama belakang tidak boleh kosong",
       },
       password: {
-        error: !formData.password,
-        message: "Password tidak boleh kosong",
+        error: !formData.password || formData.password.length < 8,
+        message: !formData.password
+          ? "Password tidak boleh kosong"
+          : "Password harus memiliki minimal 8 karakter",
       },
       confirmPassword: {
         error:
@@ -57,33 +70,49 @@ const RegisterPage: React.FC = () => {
             : "Konfirmasi password tidak boleh kosong",
       },
     };
+
     setFormErrors(errors);
     return !Object.values(errors).some((error) => error.error);
   };
 
+  // Fungsi untuk menangani perubahan input
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
     setFormErrors({ ...formErrors, [name]: { error: false, message: "" } });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Fungsi untuk menangani registrasi
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateForm()) {
-      // Simulate API response
-      const isSuccess = Math.random() > 0.5;
 
-      if (isSuccess) {
-        setNotification({
-          type: "success",
-          message: "Registrasi berhasil! Selamat datang.",
-        });
-      } else {
-        setNotification({
-          type: "error",
-          message: "Registrasi gagal. Silakan coba lagi.",
-        });
-      }
+    if (!validateForm()) {
+      setNotification({
+        type: "error",
+        message: "Formulir tidak valid. Harap periksa kembali.",
+      });
+      return;
+    }
+
+    const { email, firstName, lastName, password } = formData;
+
+    try {
+      await registerUser({
+        email,
+        first_name: firstName, // Sesuaikan dengan format yang diharapkan oleh API
+        last_name: lastName, // Sesuaikan dengan format yang diharapkan oleh API
+        password,
+      });
+      setNotification({
+        type: "success",
+        message: "Registrasi berhasil! Anda akan diarahkan ke halaman login.",
+      });
+      navigate("/login");
+    } catch (error: any) {
+      setNotification({
+        type: "error",
+        message: error.message || "Terjadi kesalahan saat registrasi.",
+      });
     }
   };
 
@@ -92,7 +121,7 @@ const RegisterPage: React.FC = () => {
       {/* Left Section */}
       <div className="flex flex-col items-center justify-center w-full lg:w-[45%] px-6 py-8">
         <div className="flex items-center gap-2 mb-8">
-          <img src={logo} alt="Logo" className="size-8" />
+          <img src={logo} alt=" Logo" className="size-8" />
           <span className="text-2xl font-semibold text-black/85">
             SIMS PPOB
           </span>
@@ -111,7 +140,7 @@ const RegisterPage: React.FC = () => {
             {notification.message}
           </div>
         )}
-        <form className="w-full max-w-md text-sm" onSubmit={handleSubmit}>
+        <form className="w-full max-w-md text-sm" onSubmit={handleRegister}>
           <InputField
             type="email"
             name="email"
@@ -119,7 +148,6 @@ const RegisterPage: React.FC = () => {
             leftIcon={<AtSymbolIcon className="h-4 w-4" />}
             value={formData.email}
             onChange={handleChange}
-            className={formErrors.email.error ? "border-red-500" : ""}
             isError={formErrors.email.error}
             errorMessage={formErrors.email.message}
           />
@@ -130,7 +158,6 @@ const RegisterPage: React.FC = () => {
             leftIcon={<UserIcon className="h-4 w-4" />}
             value={formData.firstName}
             onChange={handleChange}
-            className={formErrors.firstName.error ? "border-red-500" : ""}
             isError={formErrors.firstName.error}
             errorMessage={formErrors.firstName.message}
           />
@@ -141,7 +168,6 @@ const RegisterPage: React.FC = () => {
             leftIcon={<UserIcon className="h-4 w-4" />}
             value={formData.lastName}
             onChange={handleChange}
-            className={formErrors.lastName.error ? "border-red-500" : ""}
             isError={formErrors.lastName.error}
             errorMessage={formErrors.lastName.message}
           />
@@ -153,7 +179,6 @@ const RegisterPage: React.FC = () => {
             isPassword
             value={formData.password}
             onChange={handleChange}
-            className={formErrors.password.error ? "border-red-500" : ""}
             isError={formErrors.password.error}
             errorMessage={formErrors.password.message}
           />
@@ -165,7 +190,6 @@ const RegisterPage: React.FC = () => {
             isPassword
             value={formData.confirmPassword}
             onChange={handleChange}
-            className={formErrors.confirmPassword.error ? "border-red-500" : ""}
             isError={formErrors.confirmPassword.error}
             errorMessage={formErrors.confirmPassword.message}
           />

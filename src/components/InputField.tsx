@@ -12,6 +12,8 @@ interface InputFieldProps {
   isPassword?: boolean;
   isError?: boolean;
   errorMessage?: string;
+  readOnly?: boolean;
+  disabled?: boolean;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -25,6 +27,8 @@ const InputField: React.FC<InputFieldProps> = ({
   isPassword = false,
   isError = false,
   errorMessage,
+  readOnly,
+  disabled,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -49,6 +53,8 @@ const InputField: React.FC<InputFieldProps> = ({
         name={name}
         value={value}
         onChange={onChange}
+        readOnly={readOnly}
+        disabled={disabled}
         className={`px-4 py-3 w-full border ${
           isError ? "border-red-500" : "border-gray-300"
         } placeholder:${

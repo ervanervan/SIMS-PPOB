@@ -1,5 +1,13 @@
+import TransactionHistory from "../components/TransactionHistory";
+import UserBalance from "../components/UserBalance";
+
 const TransactionPage = () => {
-  return <div>TransactionPage</div>;
+  return (
+    <>
+      <UserBalance />
+      <TransactionHistory />
+    </>
+  );
 };
 
 export default TransactionPage;

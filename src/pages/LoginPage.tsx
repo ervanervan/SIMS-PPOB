@@ -1,12 +1,15 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
 import InputField from "../components/InputField";
 import Button from "../components/Button";
 import logo from "../assets/images/Logo.png";
 import illustration from "../assets/images/Illustrasi Login.png";
 import { AtSymbolIcon, LockClosedIcon } from "@heroicons/react/24/outline";
+import { loginUser } from "../services/authService"; // Pastikan ini sesuai dengan path yang benar
 
 const LoginPage: React.FC = () => {
+  const navigate = useNavigate(); // Inisialisasi useNavigate
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -24,10 +27,13 @@ const LoginPage: React.FC = () => {
 
   const validateForm = () => {
     const errors = {
-      email: { error: !formData.email, message: "Email tidak boleh kosong" },
+      email: {
+        error: !/\S+@\S+\.\S+/.test(formData.email),
+        message: "Format email tidak valid",
+      },
       password: {
-        error: !formData.password,
-        message: "Password tidak boleh kosong",
+        error: formData.password.length < 8,
+        message: "Password minimal 8 karakter",
       },
     };
     setFormErrors(errors);
@@ -40,21 +46,24 @@ const LoginPage: React.FC = () => {
     setFormErrors({ ...formErrors, [name]: { error: false, message: "" } });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
-      // Simulate API response
-      const isSuccess = Math.random() > 0.5;
-
-      if (isSuccess) {
+      try {
+        const response = await loginUser(formData);
+        const token = response.data.token; // Ambil token dari response.data
+        localStorage.setItem("authToken", token); // Simpan JWT ke localStorage
         setNotification({
           type: "success",
           message: "Login berhasil! Selamat datang.",
         });
-      } else {
+        setTimeout(() => {
+          navigate("/"); // Arahkan ke halaman utama
+        }, 1000);
+      } catch (error: any) {
         setNotification({
           type: "error",
-          message: "Login gagal. Email atau password salah.",
+          message: error.message || "Terjadi kesalahan.",
         });
       }
     }

@@ -1,12 +1,34 @@
-import banner1 from "../assets/images/Banner 1.png";
-import banner2 from "../assets/images/Banner 2.png";
-import banner3 from "../assets/images/Banner 3.png";
-import banner4 from "../assets/images/Banner 4.png";
-import banner5 from "../assets/images/Banner 5.png";
-
-const banners = [banner1, banner2, banner3, banner4, banner5];
+import { useEffect, useState } from "react";
+import { getBanners } from "../services/bannerService"; // Pastikan path ini sesuai
 
 export default function Banner() {
+  const [banners, setBanners] = useState<any[]>([]); // Ganti any dengan tipe yang sesuai
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchBanners = async () => {
+      try {
+        const bannerData = await getBanners();
+        setBanners(bannerData);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBanners();
+  }, []);
+
+  if (loading) {
+    return <p>Loading banners...</p>; // Tampilkan loading state
+  }
+
+  if (error) {
+    return <p>Error: {error}</p>; // Tampilkan pesan kesalahan
+  }
+
   return (
     <section className="mt-12">
       <div className="container mx-auto p-5">
@@ -16,8 +38,8 @@ export default function Banner() {
         {banners.map((banner, index) => (
           <div key={index} className="flex-shrink-0">
             <img
-              src={banner}
-              alt={`Banner ${index + 1}`}
+              src={banner.banner_image} // Ambil gambar dari data banner
+              alt={banner.banner_name} // Gunakan nama banner sebagai alt
               className="w-72 h-auto object-cover rounded-lg shadow-md"
             />
           </div>

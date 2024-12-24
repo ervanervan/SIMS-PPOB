@@ -7,6 +7,8 @@ import HomePage from "./pages/HomePage";
 import AccountPage from "./pages/AccountPage";
 import TransactionPage from "./pages/TransactionPage";
 import TopupPage from "./pages/TopupPage";
+import AccountEditPage from "./pages/AccountEditPage";
+import ServicePage from "./pages/ServicePage";
 
 export const router = createBrowserRouter([
   {
@@ -26,11 +28,19 @@ export const router = createBrowserRouter([
         element: <RegisterPage />,
       },
       {
-        path: "/account",
+        path: "/profile",
         element: <AccountPage />,
       },
       {
-        path: "/transaction",
+        path: "/profile/update",
+        element: <AccountEditPage />,
+      },
+      {
+        path: "/transaction/:serviceCode",
+        element: <ServicePage />,
+      },
+      {
+        path: "/transaction/history",
         element: <TransactionPage />,
       },
       {

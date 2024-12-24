@@ -2,14 +2,18 @@ import { BanknotesIcon } from "@heroicons/react/24/outline";
 import InputField from "./InputField";
 import Button from "./Button";
 import { useState } from "react";
+import { topUpBalance } from "../services/transactionService"; // Import fungsi topUpBalance
 
 export default function FormTopUp() {
   const [customAmount, setCustomAmount] = useState<string>("");
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false); // State untuk loading
+  const [successMessage, setSuccessMessage] = useState(""); // State untuk pesan sukses
 
   const denominations = [10000, 20000, 50000, 100000, 250000, 500000];
+  const MAX_TOPUP_AMOUNT = 1000000; // Batas maksimum top-up
 
   // Handle Custom Input Change
   const handleCustomInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -18,6 +22,7 @@ export default function FormTopUp() {
     setSelectedAmount(null); // Reset selected preset amount
     setIsError(false);
     setErrorMessage("");
+    setSuccessMessage(""); // Reset success message
   };
 
   // Handle Denomination Click
@@ -26,22 +31,50 @@ export default function FormTopUp() {
     setCustomAmount(amount.toString()); // Update input field with selected denomination
     setIsError(false);
     setErrorMessage("");
+    setSuccessMessage(""); // Reset success message
   };
 
   // Handle Top Up Submission
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Validate input
-    const amount = parseInt(customAmount, 10);
+    const amount = parseInt(customAmount, 10) || selectedAmount; // Ambil dari customAmount atau selectedAmount
     if (!amount || amount < 10000) {
       setIsError(true);
       setErrorMessage("Nominal top up minimal Rp10.000");
       return;
     }
 
-    alert(`Top up berhasil sebesar Rp${amount.toLocaleString("id-ID")}`);
+    if (amount > MAX_TOPUP_AMOUNT) {
+      setIsError(true);
+      setErrorMessage(
+        `Nominal top up maksimal Rp${MAX_TOPUP_AMOUNT.toLocaleString("id-ID")}`
+      );
+      return;
+    }
+
+    setLoading(true); // Set loading state to true
+    setIsError(false); // Reset error state
+    setSuccessMessage(""); // Reset success message
+
+    try {
+      const result = await topUpBalance(amount); // Panggil fungsi topUpBalance
+      setSuccessMessage(
+        `Top Up berhasil sebesar Rp${result.balance.toLocaleString("id-ID")}`
+      ); // Set success message
+      setCustomAmount(""); // Reset input field
+      setSelectedAmount(null); // Reset selected amount
+    } catch (error: any) {
+      setIsError(true);
+      setErrorMessage(error.message); // Set error message
+    } finally {
+      setLoading(false); // Set loading state to false
+    }
   };
+
+  // Disable button if no valid amount is selected or input
+  const isButtonDisabled = !customAmount && !selectedAmount;
 
   return (
     <section className="p-5 container mx-auto">
@@ -65,9 +98,17 @@ export default function FormTopUp() {
               isError={isError}
               errorMessage={errorMessage}
             />
-            <Button type="submit" className="w-full bg-primary text-white">
-              Top Up
+            <Button
+              type="submit"
+              className="w-full bg-primary text-white"
+              disabled={loading || isButtonDisabled} // Disable button if loading or no valid amount }
+            >
+              {loading ? "Loading..." : "Top Up"}
             </Button>
+            {successMessage && (
+              <p className="text-green-500 mt-2">{successMessage}</p>
+            )}{" "}
+            {/* Tampilkan pesan sukses */}
           </div>
           <div className="grid grid-cols-3 items-center gap-y-7 gap-x-2">
             {denominations.map((amount) => (
