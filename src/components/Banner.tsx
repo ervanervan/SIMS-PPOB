@@ -12,7 +12,7 @@ export default function Banner() {
       <div className="container mx-auto p-5">
         <h2 className="text-black/85 font-semibold">Temukan promo menarik</h2>
       </div>
-      <div className="flex gap-6 px-14 overflow-x-auto scrollbar-none mb-10">
+      <div className="flex gap-6 px-5 lg:px-14 overflow-x-auto scrollbar-none mb-10">
         {banners.map((banner, index) => (
           <div key={index} className="flex-shrink-0">
             <img

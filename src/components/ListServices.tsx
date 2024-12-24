@@ -29,7 +29,7 @@ const services = [
 export default function ListServices() {
   return (
     <section className="px-5 py-6 container mx-auto">
-      <div className="flex items-center justify-between gap-5">
+      <div className="flex flex-wrap items-center justify-between md:justify-start lg:justify-between md:gap-x-4 gap-y-14 gap-x-5 lg:gap-5">
         {services.map((service, index) => (
           <div key={index} className="flex flex-col items-center size-16">
             <img
