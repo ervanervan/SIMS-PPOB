@@ -38,7 +38,48 @@ export default function ProfileCard() {
   };
 
   if (loading) {
-    return <p>Loading...</p>; // Tampilkan loading state
+    return (
+      <div className="p-5 container mx-auto">
+        <div className="max-w-2xl mx-auto">
+          <div className="flex flex-col items-center justify-center mt-3">
+            <div className="relative size-36 animate-pulse">
+              <div className="w-36 h-36 bg-gray-300 rounded-full" />{" "}
+              {/* Skeleton untuk gambar profil */}
+              <div className="absolute bottom-0 right-0 border border-gray-300 p-2 rounded-full bg-white">
+                <div className="w-6 h-6 bg-gray-300 rounded-full" />{" "}
+                {/* Skeleton untuk ikon edit */}
+              </div>
+            </div>
+            <div className="mt-6 w-1/2 h-6 bg-gray-300 rounded animate-pulse"></div>{" "}
+            {/* Skeleton untuk nama */}
+          </div>
+          <div className="mt-10">
+            <div className="mb-5 text-sm font-semibold text-black/85">
+              <div className="w-20 h-5 bg-gray-300 animate-pulse"></div>{" "}
+              {/* Skeleton untuk label email */}
+            </div>
+            <div className="w-full h-10 bg-gray-300 rounded animate-pulse"></div>{" "}
+            {/* Skeleton untuk input email */}
+            <div className="mb-5 text-sm font-semibold text-black/85 mt-4">
+              <div className="w-20 h-5 bg-gray-300 animate-pulse"></div>{" "}
+              {/* Skeleton untuk label nama depan */}
+            </div>
+            <div className="w-full h-10 bg-gray-300 rounded animate-pulse"></div>{" "}
+            {/* Skeleton untuk input nama depan */}
+            <div className="mb-5 text-sm font-semibold text-black/85 mt-4">
+              <div className="w-20 h-5 bg-gray-300 animate-pulse"></div>{" "}
+              {/* Skeleton untuk label nama belakang */}
+            </div>
+            <div className="w-full h-10 bg-gray-300 rounded animate-pulse"></div>{" "}
+            {/* Skeleton untuk input nama belakang */}
+          </div>
+          <div className="flex flex-col gap-3 mt-5 mb-10">
+            <div className="w-full h-12 bg-gray-300 rounded mt-4 animate-pulse"></div>{" "}
+            {/* Skeleton untuk tombol Logout */}
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (error) {

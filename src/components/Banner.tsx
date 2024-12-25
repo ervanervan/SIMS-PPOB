@@ -22,7 +22,24 @@ export default function Banner() {
   }, []);
 
   if (loading) {
-    return <p>Loading banners...</p>; // Tampilkan loading state
+    return (
+      <section className="mt-12">
+        <div className="container mx-auto p-5">
+          <h2 className="text-black/85 font-semibold">Temukan promo menarik</h2>
+        </div>
+        <div className="flex gap-6 px-5 lg:px-14 overflow-x-auto scrollbar-none mb-10">
+          {/* Skeleton untuk banner */}
+          {[...Array(4)].map((_, index) => (
+            <div
+              key={index}
+              className="flex-shrink-0 w-72 h-40 bg-gray-300 rounded-lg shadow-md animate-pulse"
+            >
+              <div className="w-full h-full bg-gray-300 rounded-lg"></div>
+            </div>
+          ))}
+        </div>
+      </section>
+    );
   }
 
   if (error) {

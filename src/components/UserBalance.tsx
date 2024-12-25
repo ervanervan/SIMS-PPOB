@@ -45,7 +45,34 @@ export default function UserBalance() {
   }, []);
 
   if (loading) {
-    return <p>Loading...</p>; // Tampilkan loading state
+    return (
+      <section className="px-5 py-6 container mx-auto">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex flex-col w-full md:w-2/5">
+            {/* Skeleton for profile image */}
+            <div className="w-16 h-16 rounded-full bg-gray-200 animate-pulse" />
+            <div className="mt-4">
+              {/* Skeleton for name text */}
+              <div className="w-32 h-5 bg-gray-200 animate-pulse mb-2" />
+              {/* Skeleton for last name text */}
+              <div className="w-40 h-6 bg-gray-200 animate-pulse" />
+            </div>
+          </div>
+          <div className="relative w-full md:w-3/5">
+            {/* Skeleton for balance background image */}
+            <div className="w-full h-44 bg-gray-200 animate-pulse rounded-lg" />
+            <div className="absolute top-0 left-0 p-7 flex flex-col gap-5">
+              {/* Skeleton for "Saldo Anda" text */}
+              <div className="w-24 h-4 bg-gray-200 animate-pulse" />
+              {/* Skeleton for balance value */}
+              <div className="w-40 h-6 bg-gray-200 animate-pulse" />
+              {/* Skeleton for "Lihat saldo" button */}
+              <div className="w-24 h-4 bg-gray-200 animate-pulse" />
+            </div>
+          </div>
+        </div>
+      </section>
+    );
   }
 
   if (error) {

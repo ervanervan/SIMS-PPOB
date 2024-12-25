@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
-import { useParams, useLocation } from "react-router-dom"; // Import useLocation
+import { useParams, useLocation } from "react-router-dom";
 import { BanknotesIcon } from "@heroicons/react/24/outline";
 import InputField from "./InputField";
 import Button from "./Button";
-import { createTransaction } from "../services/transactionService"; // Import fungsi createTransaction
+import { createTransaction } from "../services/transactionService";
+import Popup from "./Popup"; // Import komponen Popup
 
 interface Service {
   service_code: string;
   service_name: string;
   service_icon: string;
-  service_tariff: number; // Ganti total_amount dengan service_tariff
+  service_tariff: number;
 }
 
 export default function ServiceDetail() {
@@ -19,8 +20,9 @@ export default function ServiceDetail() {
   const [service, setService] = useState<Service | null>(null); // State untuk menyimpan detail layanan
   const [amount, setAmount] = useState<string>(""); // State untuk menyimpan jumlah yang ingin dibayarkan
   const [loading, setLoading] = useState(false); // State untuk loading
-  const [error, setError] = useState<string | null>(null); // State untuk error
-  const [successMessage, setSuccessMessage] = useState<string | null>(null); // State untuk pesan sukses
+  const [showConfirmPopup, setShowConfirmPopup] = useState(false); // State untuk menampilkan pop-up konfirmasi
+  const [showResultPopup, setShowResultPopup] = useState(false); // State untuk menampilkan pop-up hasil
+  const [paymentResult, setPaymentResult] = useState<string | null>(null); // State untuk menyimpan hasil pembayaran
 
   useEffect(() => {
     // Temukan layanan yang sesuai dengan serviceCode
@@ -39,26 +41,33 @@ export default function ServiceDetail() {
     }
   }, [serviceCode, services]);
 
-  const handlePayment = async () => {
+  const handlePayment = () => {
+    setShowConfirmPopup(true); // Tampilkan pop-up konfirmasi
+  };
+
+  const confirmPayment = async () => {
     if (!service) return;
 
     setLoading(true);
-    setError(null);
-    setSuccessMessage(null);
 
     try {
-      const result = await createTransaction(service.service_code); // Panggil fungsi createTransaction
-      setSuccessMessage(
-        `Transaksi berhasil! Invoice Number: ${result.invoice_number}`
-      );
-
-      // Ambil total_amount dari respons dan set ke amount
-      setAmount(result.total_amount ? result.total_amount.toString() : ""); // Set amount dengan total_amount dari respons
+      await createTransaction(service.service_code); // Panggil fungsi createTransaction
+      setPaymentResult("sukses"); // Set hasil pembayaran
     } catch (err: any) {
-      setError(err.message); // Set error message
+      setPaymentResult("gagal"); // Set hasil pembayaran
     } finally {
       setLoading(false);
+      setShowConfirmPopup(false); // Sembunyikan pop-up konfirmasi
+      setShowResultPopup(true); // Tampilkan pop-up hasil
     }
+  };
+
+  const cancelPayment = () => {
+    setShowConfirmPopup(false); // Sembunyikan pop-up konfirmasi
+  };
+
+  const closeResultPopup = () => {
+    setShowResultPopup(false); // Sembunyikan pop-up hasil
   };
 
   if (!service) {
@@ -98,14 +107,46 @@ export default function ServiceDetail() {
           >
             {loading ? "Loading..." : "Bayar"}
           </Button>
-          {error && <p className="text-red-500">{error}</p>}{" "}
-          {/* Tampilkan pesan error */}
-          {successMessage && (
-            <p className="text-green-500">{successMessage}</p>
-          )}{" "}
-          {/* Tampilkan pesan sukses */}
         </div>
       </div>
+
+      {/* Pop-up Konfirmasi Pembayaran */}
+      {showConfirmPopup && (
+        <Popup
+          content={
+            <p className="flex flex-col items-center justify-center gap-2">
+              <span className="text-black/85">
+                Beli {service.service_name} senilai{" "}
+              </span>
+              <span className="text-black/85 font-bold text-2xl">
+                Rp{amount} ?
+              </span>
+            </p>
+          }
+          onConfirm={confirmPayment}
+          onCancel={cancelPayment}
+          status="confirm" // Set status ke confirm
+        />
+      )}
+
+      {showResultPopup && (
+        <Popup
+          content={
+            <p className="flex flex-col text-black/70 items-center justify-center gap-2">
+              <span className="text-black/85">
+                Pembayaran {service.service_name} sebesar
+              </span>
+              <span className="text-black/85 font-bold text-2xl">
+                Rp{amount}
+              </span>
+              <span>{paymentResult === "sukses" ? "Berhasil" : "Gagal"}</span>
+            </p>
+          }
+          onConfirm={closeResultPopup}
+          confirmText="Kembali ke Beranda"
+          status={paymentResult === "sukses" ? "success" : "failed"} // Gunakan status sesuai hasil
+        />
+      )}
     </section>
   );
 }

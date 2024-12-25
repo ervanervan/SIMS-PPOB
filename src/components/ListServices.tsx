@@ -29,7 +29,22 @@ export default function ListServices() {
   };
 
   if (loading) {
-    return <p>Loading services...</p>; // Tampilkan loading state
+    return (
+      <section className="px-5 py-6 container mx-auto">
+        <div className="flex flex-wrap items-center justify-between md:justify-start lg:justify-between md:gap-x-4 gap-y-14 gap-x-5 lg:gap-5">
+          {/* Skeleton untuk setiap layanan */}
+          {[...Array(12)].map((_, index) => (
+            <div
+              key={index}
+              className="flex flex-col items-center w-20 h-28 bg-gray-100 animate-pulse rounded-lg"
+            >
+              <div className="w-16 h-16 bg-gray-200 rounded-full mt-4"></div>
+              <div className="w-16 h-4 bg-gray-200 mt-2"></div>
+            </div>
+          ))}
+        </div>
+      </section>
+    );
   }
 
   if (error) {

@@ -44,7 +44,27 @@ const TransactionHistory = () => {
   };
 
   if (loading) {
-    return <p className="text-center">Loading...</p>; // Tampilkan loading state
+    return (
+      <div className="p-5 container mx-auto">
+        <div className="h-6 w-32 bg-gray-300 rounded mb-5"></div>
+        <div className="border flex items-start justify-between border-gray-300 px-6 py-4 rounded-xl animate-pulse">
+          <div className="flex flex-col gap-2">
+            <div className="h-6 w-32 bg-gray-300 rounded"></div>{" "}
+            {/* Placeholder untuk totalAmount */}
+            <div className="flex items-center gap-2">
+              <div className="h-3 w-32 bg-gray-300 rounded"></div>{" "}
+              {/* Placeholder untuk formatted date */}
+              <div className="h-3 w-20 bg-gray-300 rounded"></div>{" "}
+              {/* Placeholder untuk formatted time */}
+            </div>
+          </div>
+          <div>
+            <div className="h-4 w-40 bg-gray-300 rounded"></div>{" "}
+            {/* Placeholder untuk description */}
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
