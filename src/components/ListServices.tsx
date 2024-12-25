@@ -2,8 +2,16 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate dari React Router
 import { getServices } from "../services/productService"; // Pastikan path ini sesuai
 
+// Definisikan tipe untuk layanan
+interface Service {
+  service_code: string;
+  service_name: string;
+  service_icon: string;
+  service_tariff: number;
+}
+
 export default function ListServices() {
-  const [services, setServices] = useState<any[]>([]); // Ganti any dengan tipe yang sesuai
+  const [services, setServices] = useState<Service[]>([]); // Ganti any dengan tipe yang sesuai
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate(); // Inisialisasi useNavigate
