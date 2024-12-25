@@ -18,13 +18,18 @@ export const getBalance = async () => {
       },
     });
 
+    // Memeriksa status dari respons
     if (response.data.status !== 0) {
       throw new Error(response.data.message); // Tangani status error dari server
     }
+
     return response.data.data; // Mengembalikan data saldo
   } catch (error) {
     // Menangani kesalahan
     if (axios.isAxiosError(error)) {
+      if (error.response?.data?.status === 108) {
+        throw new Error("Token tidak valid atau kadaluwarsa"); // Menangani status 401
+      }
       throw new Error(
         error.response?.data?.message || "Failed to fetch balance"
       );
@@ -59,13 +64,22 @@ export const topUpBalance = async (amount: number) => {
       }
     );
 
+    // Memeriksa status dari respons
     if (response.data.status !== 0) {
       throw new Error(response.data.message); // Tangani status error dari server
     }
+
     return response.data.data; // Mengembalikan data saldo setelah top-up
   } catch (error) {
     // Menangani kesalahan
     if (axios.isAxiosError(error)) {
+      if (error.response?.data?.status === 102) {
+        throw new Error(
+          "Parameter amount hanya boleh angka dan tidak boleh lebih kecil dari 0"
+        ); // Menangani status 400
+      } else if (error.response?.data?.status === 108) {
+        throw new Error("Token tidak valid atau kadaluwarsa"); // Menangani status 401
+      }
       throw new Error(
         error.response?.data?.message || "Failed to top up balance"
       );
@@ -105,6 +119,11 @@ export const createTransaction = async (serviceCode: string) => {
   } catch (error) {
     // Menangani kesalahan
     if (axios.isAxiosError(error)) {
+      if (error.response?.data?.status === 102) {
+        throw new Error("Layanan tidak ditemukan"); // Menangani status 400
+      } else if (error.response?.data?.status === 108) {
+        throw new Error("Token tidak valid atau kadaluwarsa"); // Menangani status 401
+      }
       throw new Error(
         error.response?.data?.message || "Failed to create transaction"
       );
@@ -147,6 +166,9 @@ export const getTransactionHistory = async (
   } catch (error) {
     // Menangani kesalahan
     if (axios.isAxiosError(error)) {
+      if (error.response?.data?.status === 108) {
+        throw new Error("Token tidak valid atau kadaluwarsa"); // Menangani status 401
+      }
       throw new Error(
         error.response?.data?.message || "Failed to get transaction history"
       );
