@@ -52,17 +52,32 @@ const LoginPage: React.FC = () => {
       try {
         const response = await loginUser(formData);
 
-        const token = response.data.token;
-        localStorage.setItem("authToken", token);
+        // Memeriksa status dari respons
+        if (response && response.status === 0) {
+          const token = response.data?.token; // Menggunakan optional chaining
+          if (token) {
+            localStorage.setItem("authToken", token);
+            setNotification({
+              type: "success",
+              message: "Login berhasil! Selamat datang.",
+            });
 
-        setNotification({
-          type: "success",
-          message: "Login berhasil! Selamat datang.",
-        });
-
-        setTimeout(() => {
-          navigate("/home");
-        }, 1000);
+            setTimeout(() => {
+              navigate("/home"); // Ganti dengan rute yang sesuai setelah login
+            }, 1000);
+          } else {
+            setNotification({
+              type: "error",
+              message: "Token tidak ditemukan.",
+            });
+          }
+        } else {
+          // Menangani kesalahan berdasarkan status
+          setNotification({
+            type: "error",
+            message: response?.message || "Terjadi kesalahan saat login.",
+          });
+        }
       } catch (error: any) {
         setNotification({
           type: "error",

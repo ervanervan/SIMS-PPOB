@@ -14,7 +14,9 @@ interface RegisterUser {
 interface ApiResponse {
   status: number;
   message: string;
-  data: null | any; // Ganti `any` dengan tipe data yang sesuai jika ada
+  data: {
+    token: string;
+  } | null; // Ganti `null` dengan tipe data yang sesuai jika ada
 }
 
 export const registerUser = async (
@@ -49,14 +51,24 @@ interface LoginUser {
   password: string;
 }
 
-export const loginUser = async (userData: LoginUser) => {
+export const loginUser = async (userData: LoginUser): Promise<ApiResponse> => {
   try {
-    const response = await api.post(`${API_BASE_URL}/login`, userData);
-    return response.data;
+    const response = await api.post<ApiResponse>(
+      `${API_BASE_URL}/login`,
+      userData
+    );
+
+    // Memeriksa status dari respons
+    if (response.data.status === 0) {
+      return response.data; // Login berhasil
+    } else {
+      throw new Error(response.data.message); // Menangani kesalahan berdasarkan status
+    }
   } catch (error) {
     // Menangani kesalahan
     if (axios.isAxiosError(error)) {
-      throw new Error(error.response?.data?.message || "Login failed");
+      const errorMessage = error.response?.data?.message || "Login failed";
+      throw new Error(errorMessage);
     } else {
       throw new Error("An unexpected error occurred");
     }
