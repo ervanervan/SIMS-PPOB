@@ -1,79 +1,71 @@
 import { BanknotesIcon } from "@heroicons/react/24/outline";
 import InputField from "./InputField";
 import Button from "./Button";
+import Popup from "./Popup";
 import { useState } from "react";
 import { topUpBalance } from "../services/transactionService"; // Import fungsi topUpBalance
 
 export default function FormTopUp() {
   const [customAmount, setCustomAmount] = useState<string>("");
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
-  const [isError, setIsError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [loading, setLoading] = useState(false); // State untuk loading
-  const [successMessage, setSuccessMessage] = useState(""); // State untuk pesan sukses
+  const [loading, setLoading] = useState(false);
+  const [showConfirmPopup, setShowConfirmPopup] = useState(false);
+  const [showResultPopup, setShowResultPopup] = useState(false);
+  const [paymentResult, setPaymentResult] = useState<"sukses" | "gagal" | null>(
+    null
+  );
 
   const denominations = [10000, 20000, 50000, 100000, 250000, 500000];
-  const MAX_TOPUP_AMOUNT = 1000000; // Batas maksimum top-up
+  const MAX_TOPUP_AMOUNT = 1000000;
 
-  // Handle Custom Input Change
   const handleCustomInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setCustomAmount(value);
-    setSelectedAmount(null); // Reset selected preset amount
-    setIsError(false);
-    setErrorMessage("");
-    setSuccessMessage(""); // Reset success message
+    setSelectedAmount(null);
   };
 
-  // Handle Denomination Click
   const handleDenominationClick = (amount: number) => {
     setSelectedAmount(amount);
-    setCustomAmount(amount.toString()); // Update input field with selected denomination
-    setIsError(false);
-    setErrorMessage("");
-    setSuccessMessage(""); // Reset success message
+    setCustomAmount(amount.toString());
   };
 
-  // Handle Top Up Submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate input
-    const amount = parseInt(customAmount, 10) || selectedAmount; // Ambil dari customAmount atau selectedAmount
-    if (!amount || amount < 10000) {
-      setIsError(true);
-      setErrorMessage("Nominal top up minimal Rp10.000");
-      return;
+    const amount = customAmount ? parseInt(customAmount, 10) : selectedAmount;
+    if (amount === null || amount < 10000 || amount > MAX_TOPUP_AMOUNT) {
+      return; // Hentikan eksekusi jika jumlah tidak valid
     }
 
-    if (amount > MAX_TOPUP_AMOUNT) {
-      setIsError(true);
-      setErrorMessage(
-        `Nominal top up maksimal Rp${MAX_TOPUP_AMOUNT.toLocaleString("id-ID")}`
-      );
-      return;
-    }
+    setShowConfirmPopup(true); // Show confirmation popup
+  };
 
-    setLoading(true); // Set loading state to true
-    setIsError(false); // Reset error state
-    setSuccessMessage(""); // Reset success message
+  const handleConfirmPayment = async () => {
+    setShowConfirmPopup(false); // Hide confirm popup
+    setLoading(true);
 
     try {
-      const result = await topUpBalance(amount); // Panggil fungsi topUpBalance
-      setSuccessMessage(
-        `Top Up berhasil sebesar Rp${result.balance.toLocaleString("id-ID")}`
-      ); // Set success message
-      setCustomAmount(""); // Reset input field
-      setSelectedAmount(null); // Reset selected amount
+      const amount = customAmount ? parseInt(customAmount, 10) : selectedAmount;
+      await topUpBalance(amount!); // Ensure the amount is valid
+      setPaymentResult("sukses");
     } catch (error: any) {
-      setIsError(true);
-      setErrorMessage(error.message); // Set error message
+      setPaymentResult("gagal");
     } finally {
-      setLoading(false); // Set loading state to false
+      setLoading(false);
+      setShowResultPopup(true); // Show result popup
     }
   };
 
-  // Disable button if no valid amount is selected or input
+  const handleCloseResultPopup = () => {
+    setCustomAmount(""); // Reset input field
+    setSelectedAmount(null); // Reset selected amount
+    setShowResultPopup(false); // Close the result popup
+  };
+
+  const handleCancelPayment = () => {
+    setShowConfirmPopup(false); // Hide confirm popup if cancelled
+  };
+
   const isButtonDisabled = !customAmount && !selectedAmount;
 
   return (
@@ -95,20 +87,14 @@ export default function FormTopUp() {
               value={customAmount}
               onChange={handleCustomInputChange}
               leftIcon={<BanknotesIcon className="h-4 w-4" />}
-              isError={isError}
-              errorMessage={errorMessage}
             />
             <Button
               type="submit"
               className="w-full bg-primary text-white"
-              disabled={loading || isButtonDisabled} // Disable button if loading or no valid amount }
+              disabled={loading || isButtonDisabled}
             >
               {loading ? "Loading..." : "Top Up"}
             </Button>
-            {successMessage && (
-              <p className="text-green-500 mt-2">{successMessage}</p>
-            )}{" "}
-            {/* Tampilkan pesan sukses */}
           </div>
           <div className="grid grid-cols-3 items-center gap-y-7 gap-x-2">
             {denominations.map((amount) => (
@@ -127,6 +113,50 @@ export default function FormTopUp() {
           </div>
         </form>
       </div>
+
+      {/* Pop-up Konfirmasi Pemb ayaran */}
+      {showConfirmPopup && (
+        <Popup
+          content={
+            <p className="flex flex-col items-center justify-center gap-2">
+              <span className="text-black/85">
+                Anda yakin untuk Top Up sebesar{" "}
+              </span>
+              <span className="text-black/85 font-bold text-2xl">
+                Rp
+                {customAmount
+                  ? customAmount
+                  : selectedAmount?.toLocaleString("id-ID")}
+              </span>
+            </p>
+          }
+          onConfirm={handleConfirmPayment}
+          onCancel={handleCancelPayment}
+          status="confirm"
+        />
+      )}
+
+      {/* Pop-up Hasil Pembayaran */}
+      {showResultPopup && (
+        <Popup
+          content={
+            <p className="flex flex-col text-black/70 items-center justify-center gap-2">
+              <span className="text-black/85">Top Up sebesar</span>
+              <span className="text-black/85 font-bold text-2xl">
+                Rp
+                {customAmount
+                  ? customAmount
+                  : selectedAmount?.toLocaleString("id-ID")}
+              </span>
+
+              <span>{paymentResult === "sukses" ? "Berhasil" : "Gagal"}</span>
+            </p>
+          }
+          onConfirm={handleCloseResultPopup}
+          confirmText="Kembali ke Beranda"
+          status={paymentResult === "sukses" ? "success" : "failed"}
+        />
+      )}
     </section>
   );
 }
