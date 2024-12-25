@@ -94,7 +94,7 @@ const RegisterPage: React.FC = () => {
     const { email, firstName, lastName, password } = formData;
 
     try {
-      await registerUser({
+      const response = await registerUser({
         email,
         first_name: firstName,
         last_name: lastName,
@@ -102,9 +102,14 @@ const RegisterPage: React.FC = () => {
       });
       setNotification({
         type: "success",
-        message: "Registrasi berhasil! Anda akan diarahkan ke halaman login.",
+        message:
+          response.message ||
+          "Registrasi berhasil! Anda akan diarahkan ke halaman login.",
       });
-      navigate("/login");
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 1000);
     } catch (error: any) {
       setNotification({
         type: "error",

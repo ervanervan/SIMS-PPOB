@@ -11,14 +11,33 @@ interface RegisterUser {
   password: string;
 }
 
-export const registerUser = async (userData: RegisterUser) => {
+interface ApiResponse {
+  status: number;
+  message: string;
+  data: null | any; // Ganti `any` dengan tipe data yang sesuai jika ada
+}
+
+export const registerUser = async (
+  userData: RegisterUser
+): Promise<ApiResponse> => {
   try {
-    const response = await api.post(`${API_BASE_URL}/registration`, userData);
-    return response.data; // Mengembalikan data respons jika berhasil
+    const response = await api.post<ApiResponse>(
+      `${API_BASE_URL}/registration`,
+      userData
+    );
+
+    // Memeriksa status dari respons
+    if (response.data.status === 0) {
+      return response.data; // Registrasi berhasil
+    } else {
+      throw new Error(response.data.message); // Menangani kesalahan berdasarkan status
+    }
   } catch (error) {
     // Menangani kesalahan
     if (axios.isAxiosError(error)) {
-      throw new Error(error.response?.data?.message || "Registration failed");
+      const errorMessage =
+        error.response?.data?.message || "Registration failed";
+      throw new Error(errorMessage);
     } else {
       throw new Error("An unexpected error occurred");
     }
