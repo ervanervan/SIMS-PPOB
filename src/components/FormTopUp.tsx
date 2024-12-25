@@ -84,7 +84,7 @@ export default function FormTopUp() {
           <p className="text-black/85 font-semibold text-3xl">Nominal Top Up</p>
         </div>
         <form
-          className="grid grid-cols-2 md:grid-cols-3 gap-6"
+          className="grid grid-cols-1 lg:grid-cols-3 gap-6"
           onSubmit={handleSubmit}
         >
           <div className="md:col-span-2 w-full">

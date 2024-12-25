@@ -67,10 +67,10 @@ const Navbar: React.FC = () => {
 
       {/* Menu dropdown untuk mobile */}
       {menuOpen && (
-        <div className="md:hidden p-4 space-y-4 bg-white shadow-md">
+        <div className="md:hidden p-5 space-y-4 bg-white shadow-md">
           <Link
             to="/topup"
-            className={`block ${
+            className={`block text-base font-medium ${
               isActive("/topup") ? "text-primary" : "text-black/85"
             } hover:text-primary/90`}
             onClick={() => setMenuOpen(false)}
@@ -79,7 +79,7 @@ const Navbar: React.FC = () => {
           </Link>
           <Link
             to="/transaction/history"
-            className={`block ${
+            className={`block text-base font-medium ${
               isActive("/transaction/history")
                 ? "text-primary"
                 : "text-black/85"
@@ -90,7 +90,7 @@ const Navbar: React.FC = () => {
           </Link>
           <Link
             to="/profile"
-            className={`block ${
+            className={`block text-base font-medium ${
               isActive("/profile") ? "text-primary" : "text-black/85"
             } hover:text-primary/90`}
             onClick={() => setMenuOpen(false)}

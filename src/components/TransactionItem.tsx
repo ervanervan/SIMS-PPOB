@@ -37,7 +37,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
   const isTopUp = transactionType === "TOPUP";
 
   return (
-    <div className="border flex items-start justify-between border-gray-300 px-6 py-4 rounded-xl">
+    <div className="border flex items-start justify-between border-gray-300 p-4 md:px-6 md:py-4 rounded-xl">
       <div className="flex flex-col gap-2">
         <h3
           className={`text-xl font-semibold ${
