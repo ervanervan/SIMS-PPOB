@@ -9,7 +9,7 @@ const TransactionHistory = () => {
   const [error, setError] = useState<string | null>(null); // State untuk error
   const [offset, setOffset] = useState(0); // State untuk offset
   const [hasMore, setHasMore] = useState(true); // State untuk mengecek apakah masih ada data
-  const limit = 5; // Limit untuk jumlah transaksi yang ditampilkan
+  const limit = 3; // Limit untuk jumlah transaksi yang ditampilkan
 
   useEffect(() => {
     const fetchTransactionHistory = async () => {
