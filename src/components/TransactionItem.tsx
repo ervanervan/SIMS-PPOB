@@ -53,6 +53,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
       </div>
       <div>
         <p className="text-sm text-black/85">{description}</p>
+        <p className="text-sm text-black/50">Invoice: {invoiceNumber}</p>
       </div>
     </div>
   );

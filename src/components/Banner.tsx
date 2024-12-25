@@ -34,7 +34,7 @@ export default function Banner() {
               key={index}
               className="flex-shrink-0 w-72 h-40 bg-gray-300 rounded-lg shadow-md animate-pulse"
             >
-              <div className="w-full h-full bg-gray-300 rounded-lg"></div>
+              <div className="w-full h-full bg-gray-300 rounded-lg animate-pulse"></div>
             </div>
           ))}
         </div>
