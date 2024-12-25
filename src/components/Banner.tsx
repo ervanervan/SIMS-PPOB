@@ -1,8 +1,15 @@
 import { useEffect, useState } from "react";
 import { getBanners } from "../services/bannerService"; // Pastikan path ini sesuai
 
+// Definisikan tipe untuk banner
+interface BannerData {
+  banner_name: string;
+  banner_image: string;
+  description: string;
+}
+
 export default function Banner() {
-  const [banners, setBanners] = useState<any[]>([]); // Ganti any dengan tipe yang sesuai
+  const [banners, setBanners] = useState<BannerData[]>([]); // Ganti any dengan tipe yang sesuai
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
