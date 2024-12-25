@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
+import { Link, useNavigate } from "react-router-dom";
 import InputField from "../components/InputField";
 import Button from "../components/Button";
 import logo from "../assets/images/Logo.png";
 import illustration from "../assets/images/Illustrasi Login.png";
 import { AtSymbolIcon, LockClosedIcon } from "@heroicons/react/24/outline";
-import { loginUser } from "../services/authService"; // Pastikan ini sesuai dengan path yang benar
+import { loginUser } from "../services/authService";
 
 const LoginPage: React.FC = () => {
-  const navigate = useNavigate(); // Inisialisasi useNavigate
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -51,14 +51,17 @@ const LoginPage: React.FC = () => {
     if (validateForm()) {
       try {
         const response = await loginUser(formData);
-        const token = response.data.token; // Ambil token dari response.data
-        localStorage.setItem("authToken", token); // Simpan JWT ke localStorage
+
+        const token = response.data.token;
+        localStorage.setItem("authToken", token);
+
         setNotification({
           type: "success",
           message: "Login berhasil! Selamat datang.",
         });
+
         setTimeout(() => {
-          navigate("/"); // Arahkan ke halaman utama
+          navigate("/home");
         }, 1000);
       } catch (error: any) {
         setNotification({

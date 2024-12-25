@@ -1,4 +1,3 @@
-// router.tsx
 import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import LoginPage from "./pages/LoginPage";
@@ -9,42 +8,50 @@ import TransactionPage from "./pages/TransactionPage";
 import TopupPage from "./pages/TopupPage";
 import AccountEditPage from "./pages/AccountEditPage";
 import ServicePage from "./pages/ServicePage";
+import {
+  AuthenticatedRoute,
+  UnauthenticatedRoute,
+} from "./components/PrivateRoute";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <UnauthenticatedRoute element={<LoginPage />} />,
+  },
+  {
+    path: "/login",
+    element: <UnauthenticatedRoute element={<LoginPage />} />,
+  },
+  {
+    path: "/register",
+    element: <UnauthenticatedRoute element={<RegisterPage />} />,
+  },
+  {
+    path: "/",
+    element: <AuthenticatedRoute element={<App />} />,
     children: [
       {
-        path: "/",
+        path: "home",
         element: <HomePage />,
       },
       {
-        path: "/login",
-        element: <LoginPage />,
-      },
-      {
-        path: "/register",
-        element: <RegisterPage />,
-      },
-      {
-        path: "/profile",
+        path: "profile",
         element: <AccountPage />,
       },
       {
-        path: "/profile/update",
+        path: "profile/update",
         element: <AccountEditPage />,
       },
       {
-        path: "/transaction/:serviceCode",
+        path: "transaction/:serviceCode",
         element: <ServicePage />,
       },
       {
-        path: "/transaction/history",
+        path: "transaction/history",
         element: <TransactionPage />,
       },
       {
-        path: "/topup",
+        path: "topup",
         element: <TopupPage />,
       },
     ],

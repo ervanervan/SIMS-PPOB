@@ -4,7 +4,7 @@ import { BanknotesIcon } from "@heroicons/react/24/outline";
 import InputField from "./InputField";
 import Button from "./Button";
 import { createTransaction } from "../services/transactionService";
-import Popup from "./Popup"; // Import komponen Popup
+import Popup from "./Popup";
 
 interface Service {
   service_code: string;
@@ -14,35 +14,33 @@ interface Service {
 }
 
 export default function ServiceDetail() {
-  const { serviceCode } = useParams<{ serviceCode: string }>(); // Ambil serviceCode dari URL
-  const location = useLocation(); // Ambil location untuk mendapatkan state
-  const { services } = location.state as { services: Service[] }; // Ambil services dari state
-  const [service, setService] = useState<Service | null>(null); // State untuk menyimpan detail layanan
-  const [amount, setAmount] = useState<string>(""); // State untuk menyimpan jumlah yang ingin dibayarkan
-  const [loading, setLoading] = useState(false); // State untuk loading
-  const [showConfirmPopup, setShowConfirmPopup] = useState(false); // State untuk menampilkan pop-up konfirmasi
-  const [showResultPopup, setShowResultPopup] = useState(false); // State untuk menampilkan pop-up hasil
-  const [paymentResult, setPaymentResult] = useState<string | null>(null); // State untuk menyimpan hasil pembayaran
+  const { serviceCode } = useParams<{ serviceCode: string }>();
+  const location = useLocation();
+  const { services } = location.state as { services: Service[] };
+  const [service, setService] = useState<Service | null>(null);
+  const [amount, setAmount] = useState<string>("");
+  const [loading, setLoading] = useState(false);
+  const [showConfirmPopup, setShowConfirmPopup] = useState(false);
+  const [showResultPopup, setShowResultPopup] = useState(false);
+  const [paymentResult, setPaymentResult] = useState<string | null>(null);
 
   useEffect(() => {
-    // Temukan layanan yang sesuai dengan serviceCode
     const foundService = services.find((s) => s.service_code === serviceCode);
-    setService(foundService || null); // Set service jika ditemukan
+    setService(foundService || null);
 
-    // Jika layanan ditemukan, set amount dengan service_tariff
     if (foundService) {
       setAmount(
         foundService.service_tariff
           ? foundService.service_tariff.toString()
           : ""
-      ); // Set amount dengan service_tariff jika ada
+      );
     } else {
-      setAmount(""); // Reset amount jika layanan tidak ditemukan
+      setAmount("");
     }
   }, [serviceCode, services]);
 
   const handlePayment = () => {
-    setShowConfirmPopup(true); // Tampilkan pop-up konfirmasi
+    setShowConfirmPopup(true);
   };
 
   const confirmPayment = async () => {
@@ -51,27 +49,27 @@ export default function ServiceDetail() {
     setLoading(true);
 
     try {
-      await createTransaction(service.service_code); // Panggil fungsi createTransaction
-      setPaymentResult("sukses"); // Set hasil pembayaran
+      await createTransaction(service.service_code);
+      setPaymentResult("sukses");
     } catch (err: any) {
-      setPaymentResult("gagal"); // Set hasil pembayaran
+      setPaymentResult("gagal");
     } finally {
       setLoading(false);
-      setShowConfirmPopup(false); // Sembunyikan pop-up konfirmasi
-      setShowResultPopup(true); // Tampilkan pop-up hasil
+      setShowConfirmPopup(false);
+      setShowResultPopup(true);
     }
   };
 
   const cancelPayment = () => {
-    setShowConfirmPopup(false); // Sembunyikan pop-up konfirmasi
+    setShowConfirmPopup(false);
   };
 
   const closeResultPopup = () => {
-    setShowResultPopup(false); // Sembunyikan pop-up hasil
+    setShowResultPopup(false);
   };
 
   if (!service) {
-    return <p>Layanan tidak ditemukan.</p>; // Tampilkan pesan jika layanan tidak ditemukan
+    return <p>Layanan tidak ditemukan.</p>;
   }
 
   return (
@@ -96,14 +94,14 @@ export default function ServiceDetail() {
             name="customAmount"
             placeholder="Nominal yang harus dibayarkan"
             leftIcon={<BanknotesIcon className="h-4 w-4" />}
-            value={amount} // Tampilkan nilai dari total_amount setelah transaksi
-            readOnly // Set input field menjadi read-only
-            disabled // Disable input field
+            value={amount}
+            readOnly
+            disabled
           />
           <Button
             className="w-full bg-primary text-white"
             onClick={handlePayment}
-            disabled={loading} // Disable button while loading
+            disabled={loading}
           >
             {loading ? "Loading..." : "Bayar"}
           </Button>
@@ -125,7 +123,7 @@ export default function ServiceDetail() {
           }
           onConfirm={confirmPayment}
           onCancel={cancelPayment}
-          status="confirm" // Set status ke confirm
+          status="confirm"
         />
       )}
 
@@ -144,7 +142,7 @@ export default function ServiceDetail() {
           }
           onConfirm={closeResultPopup}
           confirmText="Kembali ke Beranda"
-          status={paymentResult === "sukses" ? "success" : "failed"} // Gunakan status sesuai hasil
+          status={paymentResult === "sukses" ? "success" : "failed"}
         />
       )}
     </section>

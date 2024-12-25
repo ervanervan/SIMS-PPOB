@@ -9,7 +9,7 @@ import {
   AtSymbolIcon,
   LockClosedIcon,
 } from "@heroicons/react/24/outline";
-import { registerUser } from "../services/authService"; // Pastikan ini sesuai dengan path yang benar
+import { registerUser } from "../services/authService";
 
 const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
@@ -35,7 +35,6 @@ const RegisterPage: React.FC = () => {
     message: string;
   }>({ type: null, message: "" });
 
-  // Validasi form
   const validateForm = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -75,14 +74,12 @@ const RegisterPage: React.FC = () => {
     return !Object.values(errors).some((error) => error.error);
   };
 
-  // Fungsi untuk menangani perubahan input
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
     setFormErrors({ ...formErrors, [name]: { error: false, message: "" } });
   };
 
-  // Fungsi untuk menangani registrasi
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -99,8 +96,8 @@ const RegisterPage: React.FC = () => {
     try {
       await registerUser({
         email,
-        first_name: firstName, // Sesuaikan dengan format yang diharapkan oleh API
-        last_name: lastName, // Sesuaikan dengan format yang diharapkan oleh API
+        first_name: firstName,
+        last_name: lastName,
         password,
       });
       setNotification({
