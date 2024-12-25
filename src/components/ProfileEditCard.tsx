@@ -46,7 +46,11 @@ export default function ProfileEditCard() {
         await updateProfileImage(imageFile); // Panggil fungsi untuk mengupdate gambar profil
       }
       // Setelah gambar diunggah (atau jika tidak ada gambar baru), update data profil
-      await updateProfile({ first_name: firstName, last_name: lastName });
+      await updateProfile({
+        email: userProfile.email, // Sertakan email
+        first_name: firstName,
+        last_name: lastName,
+      });
       setError(null); // Reset error jika berhasil
       navigate("/profile"); // Arahkan kembali ke halaman profil setelah berhasil
     } catch (err: any) {
@@ -91,7 +95,7 @@ export default function ProfileEditCard() {
                 {/* Skeleton untuk ikon edit */}
               </div>
             </div>
-            <div className="mt-6 w-1/2 h-6 bg-gray-300 rounded animate-pulse"></div>{" "}
+            <div className="mt- 6 w-1/2 h-6 bg-gray-300 rounded animate-pulse"></div>{" "}
             {/* Skeleton untuk nama */}
           </div>
           <div className="mt-10">

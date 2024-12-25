@@ -146,7 +146,7 @@ export default function ProfileCard() {
           <Button
             type="button" // Ubah type menjadi button
             className="w-full bg-primary text-white py-3 mt-4"
-            onClick={handleEditProfile} // Tamb onClick={handleEditProfile} // Tambahkan event handler untuk tombol Edit Profile
+            onClick={handleEditProfile} // Tambahkan event handler untuk tombol Edit Profile
           >
             Edit Profile
           </Button>

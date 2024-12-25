@@ -95,11 +95,14 @@ export const getProfile = async (): Promise<UserProfile> => {
       },
     });
 
-    if (response.data.status !== 0) {
-      throw new Error(response.data.message); // Tangani status error dari server
+    // Memeriksa status dari respons
+    if (response.data.status === 0) {
+      return response.data.data; // Mengembalikan data profil pengguna
+    } else if (response.data.status === 108) {
+      throw new Error("Token tidak valid atau kadaluwarsa"); // Menangani status 401
+    } else {
+      throw new Error(response.data.message); // Tangani status error lainnya
     }
-
-    return response.data.data; // Mengembalikan data profil pengguna
   } catch (error) {
     // Menangani kesalahan
     if (axios.isAxiosError(error)) {
@@ -113,8 +116,10 @@ export const getProfile = async (): Promise<UserProfile> => {
 };
 
 interface UpdateProfile {
+  email: string;
   first_name: string;
   last_name: string;
+  profile_image?: string; // Gambar profil bersifat opsional
 }
 
 export const updateProfile = async (profileData: UpdateProfile) => {
@@ -134,10 +139,19 @@ export const updateProfile = async (profileData: UpdateProfile) => {
       }
     );
 
-    return response.data; // Mengembalikan data respons jika berhasil
+    // Memeriksa status dari respons
+    if (response.data.status === 0) {
+      return response.data; // Mengembalikan data respons jika berhasil
+    } else {
+      throw new Error(response.data.message); // Menangani kesalahan berdasarkan status
+    }
   } catch (error) {
     // Menangani kesalahan
     if (axios.isAxiosError(error)) {
+      // Menangani kesalahan dari Axios
+      if (error.response?.data?.status === 108) {
+        throw new Error("Token tidak valid atau kadaluwarsa"); // Menangani status 401
+      }
       throw new Error(
         error.response?.data?.message || "Failed to update profile"
       );
@@ -164,10 +178,20 @@ export const updateProfileImage = async (imageFile: File) => {
       },
     });
 
-    return response.data; // Mengembalikan data respons jika berhasil
+    // Memeriksa status dari respons
+    if (response.data.status === 0) {
+      return response.data; // Mengembalikan data respons jika berhasil
+    } else {
+      throw new Error(response.data.message); // Menangani kesalahan berdasarkan status
+    }
   } catch (error) {
     // Menangani kesalahan
     if (axios.isAxiosError(error)) {
+      if (error.response?.data?.status === 102) {
+        throw new Error("Format Image tidak sesuai"); // Menangani status 400
+      } else if (error.response?.data?.status === 108) {
+        throw new Error("Token tidak valid atau kadaluwarsa"); // Menangani status 401
+      }
       throw new Error(
         error.response?.data?.message || "Failed to update profile image"
       );

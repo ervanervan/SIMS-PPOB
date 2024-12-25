@@ -123,13 +123,13 @@ const RegisterPage: React.FC = () => {
       {/* Left Section */}
       <div className="flex flex-col items-center justify-center w-full lg:w-[45%] px-6 py-8">
         <div className="flex items-center gap-2 mb-8">
-          <img src={logo} alt=" Logo" className="size-8" />
+          <img src={logo} alt="Logo" className="size-8" />
           <span className="text-2xl font-semibold text-black/85">
             SIMS PPOB
           </span>
         </div>
         <h2 className="text-3xl font-semibold text-center mb-12 w-full md:w-1/2 text-black/85">
-          Lengkapi data untuk membuat akun
+          Lengk api data untuk membuat akun
         </h2>
         {notification.type && (
           <div
