@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { getTransactionHistory } from "../services/transactionService"; // Import fungsi getTransactionHistory
-import TransactionItem from "./TransactionItem"; // Import komponen TransactionItem
+import { getTransactionHistory } from "../services/transactionService";
+import TransactionItem from "./TransactionItem";
 import Button from "./Button";
 
 const TransactionHistory = () => {
